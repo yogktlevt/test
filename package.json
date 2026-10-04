@@ -1,0 +1,32 @@
+{
+  "name": "wakeful",
+  "productName": "Wakeful",
+  "version": "0.1.0",
+  "description": "A menu bar app that keeps your computer awake, with timers and automatic triggers.",
+  "main": "src/main/main.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test \"test/*.test.js\"",
+    "smoke": "node scripts/smoke.js",
+    "icons": "node scripts/make-icons.js",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "dev.wakeful.app",
+    "productName": "Wakeful",
+    "files": ["src/**/*", "assets/**/*", "package.json"],
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": "dmg",
+      "extendInfo": { "LSUIElement": true }
+    },
+    "win": { "target": "nsis" },
+    "linux": { "target": "AppImage", "category": "Utility" }
+  }
+}

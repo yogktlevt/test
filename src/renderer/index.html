@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Wakeful</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Wakeful</h1>
+    <nav role="tablist" aria-label="Sections">
+      <button role="tab" id="tab-session" data-tab="session" aria-controls="panel-session">Session</button>
+      <button role="tab" id="tab-triggers" data-tab="triggers" aria-controls="panel-triggers">Triggers</button>
+      <button role="tab" id="tab-general" data-tab="general" aria-controls="panel-general">General</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Session -->
+    <section id="panel-session" role="tabpanel" aria-labelledby="tab-session">
+      <div class="card status" id="status-card" data-active="false">
+        <svg class="eye" viewBox="0 0 48 48" aria-hidden="true">
+          <path class="eye-open" d="M4 24 Q24 4 44 24 Q24 44 4 24 Z M24 17 a7 7 0 1 0 0.01 0 Z" fill-rule="evenodd"/>
+          <path class="eye-closed" d="M5 18 Q24 40 43 18" fill="none" stroke-width="3.5" stroke-linecap="round"/>
+          <path class="eye-closed" d="M12 29 L9 36 M24 33 L24 41 M36 29 L39 36" fill="none" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+        <div class="status-text">
+          <div class="status-title" id="status-title">Sleep allowed</div>
+          <div class="status-detail" id="status-detail">Your computer will sleep as usual.</div>
+        </div>
+        <div class="countdown" id="countdown" aria-live="off"></div>
+      </div>
+
+      <div class="row">
+        <button id="primary" class="primary">Start session</button>
+      </div>
+
+      <h2>Start for</h2>
+      <div class="chips" id="presets"></div>
+
+      <div class="field-row">
+        <label for="custom-duration">Custom</label>
+        <input id="custom-duration" type="text" placeholder="e.g. 45m, 2h30m, 1:30" autocomplete="off" spellcheck="false">
+        <button id="start-custom">Start</button>
+      </div>
+      <div class="field-row">
+        <label for="until-time">Until</label>
+        <input id="until-time" type="time">
+        <button id="start-until">Start</button>
+      </div>
+
+      <label class="toggle">
+        <input type="checkbox" id="allow-display-sleep">
+        <span>Allow display to sleep<small>Keeps the computer running but lets the screen turn off.</small></span>
+      </label>
+
+      <p id="session-error" class="error" role="alert" hidden></p>
+    </section>
+
+    <!-- Triggers -->
+    <section id="panel-triggers" role="tabpanel" aria-labelledby="tab-triggers" hidden>
+      <p class="hint">Triggers start a session automatically while a condition is true, and end it when it stops. A session you start yourself is never ended by a trigger.</p>
+      <ul id="trigger-list" class="trigger-list"></ul>
+      <p id="trigger-empty" class="empty">No triggers yet.</p>
+
+      <h2>Add a trigger</h2>
+      <div class="field-row">
+        <label for="trigger-type">When</label>
+        <select id="trigger-type">
+          <option value="app">An app is running</option>
+          <option value="power">On AC power</option>
+          <option value="schedule">On a schedule</option>
+        </select>
+      </div>
+      <div class="field-row" id="trigger-app-fields">
+        <label for="trigger-app">App</label>
+        <input id="trigger-app" type="text" list="app-suggestions" placeholder="e.g. Xcode" autocomplete="off" spellcheck="false">
+        <datalist id="app-suggestions"></datalist>
+      </div>
+      <div id="trigger-schedule-fields" hidden>
+        <div class="days" id="trigger-days" role="group" aria-label="Days"></div>
+        <div class="field-row">
+          <label for="trigger-start">From</label>
+          <input id="trigger-start" type="time" value="09:00">
+          <label for="trigger-end" class="inline">to</label>
+          <input id="trigger-end" type="time" value="17:00">
+        </div>
+      </div>
+      <div class="row"><button id="add-trigger">Add trigger</button></div>
+      <p id="trigger-error" class="error" role="alert" hidden></p>
+    </section>
+
+    <!-- General -->
+    <section id="panel-general" role="tabpanel" aria-labelledby="tab-general" hidden>
+      <label class="toggle"><input type="checkbox" id="launch-at-login"><span>Launch at login</span></label>
+      <label class="toggle"><input type="checkbox" id="start-at-launch"><span>Start a session when Wakeful launches</span></label>
+      <label class="toggle"><input type="checkbox" id="notify-on-end"><span>Notify me when a session ends</span></label>
+      <label class="toggle" id="countdown-toggle"><input type="checkbox" id="show-countdown"><span>Show countdown in the menu bar</span></label>
+
+      <div class="field-row">
+        <label for="default-duration">Default session</label>
+        <select id="default-duration"></select>
+      </div>
+      <div class="field-row">
+        <label for="battery-cutoff">Battery cutoff</label>
+        <input id="battery-cutoff" type="number" min="0" max="100" step="1">
+        <span class="suffix">%</span>
+      </div>
+      <p class="hint">Ends the session when running on battery at or below this level. 0 turns it off.</p>
+      <div class="field-row">
+        <label for="shortcut">Shortcut</label>
+        <input id="shortcut" type="text" placeholder="e.g. CommandOrControl+Alt+W" autocomplete="off" spellcheck="false">
+      </div>
+      <p id="shortcut-error" class="error" role="alert" hidden></p>
+      <div class="field-row">
+        <label for="presets-input">Presets</label>
+        <input id="presets-input" type="text" placeholder="minutes, comma separated" autocomplete="off" spellcheck="false">
+      </div>
+      <p class="hint">Shown in the menu bar under “Start Session For”. Example: 15, 30, 60, 120</p>
+      <p id="general-error" class="error" role="alert" hidden></p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
